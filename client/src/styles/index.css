@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-body text-ocean-800 bg-sand-50 antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold tracking-tight;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-sand-100;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ocean-300 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ocean-400;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-xl transition-all duration-300 cursor-pointer;
+  }
+  
+  .btn-primary {
+    @apply bg-coral-500 text-white hover:bg-coral-600 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+  
+  .btn-secondary {
+    @apply bg-ocean-800 text-white hover:bg-ocean-700 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-ocean-800 text-ocean-800 hover:bg-ocean-800 hover:text-white;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 bg-white border border-sand-300 rounded-xl text-ocean-800 placeholder:text-ocean-400 focus:outline-none focus:ring-2 focus:ring-coral-500/20 focus:border-coral-500 transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-card overflow-hidden transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-1;
+  }
+  
+  .glass {
+    @apply bg-white/80 backdrop-blur-md;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-coral-500 to-coral-600 bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Leaflet custom styles */
+.leaflet-container {
+  @apply font-body rounded-2xl;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-xl shadow-dropdown;
+}
+
+.leaflet-popup-content {
+  @apply m-0 p-0;
+}
+
+/* Price marker styles */
+.price-marker {
+  @apply bg-white px-3 py-1.5 rounded-full shadow-card font-semibold text-sm text-ocean-800 border-2 border-white transition-all duration-200 cursor-pointer whitespace-nowrap;
+}
+
+.price-marker:hover,
+.price-marker.active {
+  @apply bg-ocean-800 text-white border-ocean-800 scale-110 z-50;
+}
+
+/* Animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Skeleton loading */
+.skeleton {
+  @apply bg-gradient-to-r from-sand-200 via-sand-100 to-sand-200 bg-[length:200%_100%] animate-pulse;
+}
