@@ -51,12 +51,12 @@ const DateRangePicker = ({ checkIn, checkOut, onCheckInChange, onCheckOutChange,
 
   return (
     <div ref={ref} className={`relative ${isOpen ? 'z-50' : ''} ${className}`}>
-      <div className="flex w-full overflow-hidden">
+      <div className="flex w-full">
         {/* Check-in */}
         <button
           type="button"
           onClick={() => { setSelecting('checkIn'); setIsOpen(true); }}
-          className={`flex-1 min-w-0 flex items-center gap-2 px-3 py-3 bg-white border border-sand-300 rounded-l-xl hover:border-coral-500 transition-colors text-left ${isOpen && selecting === 'checkIn' ? 'border-coral-500 ring-2 ring-coral-500/20' : ''}`}
+          className={`flex-1 min-w-0 h-[54px] flex items-center gap-2 px-3 bg-white border border-sand-300 rounded-l-xl hover:border-coral-500 transition-colors text-left ${isOpen && selecting === 'checkIn' ? 'border-coral-500 ring-2 ring-coral-500/20' : ''}`}
         >
           <Calendar size={18} className="text-ocean-400 shrink-0" />
           <div className="flex-1 min-w-0">
@@ -74,7 +74,7 @@ const DateRangePicker = ({ checkIn, checkOut, onCheckInChange, onCheckOutChange,
         <button
           type="button"
           onClick={() => { setSelecting('checkOut'); setIsOpen(true); }}
-          className={`flex-1 min-w-0 flex items-center gap-2 px-3 py-3 bg-white border border-sand-300 rounded-r-xl hover:border-coral-500 transition-colors text-left ${isOpen && selecting === 'checkOut' ? 'border-coral-500 ring-2 ring-coral-500/20' : ''}`}
+          className={`flex-1 min-w-0 h-[54px] flex items-center gap-2 px-3 bg-white border border-sand-300 rounded-r-xl hover:border-coral-500 transition-colors text-left ${isOpen && selecting === 'checkOut' ? 'border-coral-500 ring-2 ring-coral-500/20' : ''}`}
         >
           <div className="flex-1 min-w-0">
             <span className="block text-xs text-ocean-500 font-medium">Check-out</span>

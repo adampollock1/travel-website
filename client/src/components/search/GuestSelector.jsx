@@ -39,16 +39,16 @@ const GuestSelector = ({ guests, onChange, className = '' }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-3 px-4 py-3 bg-white border border-sand-300 rounded-xl hover:border-coral-500 transition-colors text-left"
+        className="w-full h-[54px] flex items-center gap-3 px-4 bg-white border border-sand-300 rounded-xl hover:border-coral-500 transition-colors text-left"
       >
-        <Users size={20} className="text-ocean-400 shrink-0" />
+        <Users size={18} className="text-ocean-400 shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="block text-xs text-ocean-500 font-medium">Guests</span>
-          <span className="block text-ocean-800 truncate">
+          <span className="block text-ocean-800 text-sm truncate">
             {totalGuests} guest{totalGuests !== 1 ? 's' : ''}, {guests.rooms} room{guests.rooms !== 1 ? 's' : ''}
           </span>
         </div>
-        <ChevronDown size={18} className={`text-ocean-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={16} className={`text-ocean-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>

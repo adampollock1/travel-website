@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, LogOut, Search } from 'lucide-react';
+import { Menu, X, Heart, User, LogOut, Search, Calendar } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import useFavoritesStore from '../../stores/favoritesStore';
+import useBookingStore from '../../stores/bookingStore';
 import Button from '../common/Button';
 
 const Navbar = () => {
@@ -15,6 +16,13 @@ const Navbar = () => {
   
   const { user, logout } = useAuthStore();
   const { favoriteIds } = useFavoritesStore();
+  const { getUserBookings } = useBookingStore();
+  
+  const upcomingBookingsCount = user 
+    ? getUserBookings(user._id).filter(b => 
+        new Date(b.checkIn) > new Date() && b.status === 'confirmed'
+      ).length 
+    : 0;
   
   const isHome = location.pathname === '/';
 
@@ -79,6 +87,14 @@ const Navbar = () => {
             
             {user ? (
               <>
+                <Link to="/bookings" className={`${linkClasses} relative`}>
+                  <Calendar size={20} />
+                  {upcomingBookingsCount > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-coral-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {upcomingBookingsCount}
+                    </span>
+                  )}
+                </Link>
                 <Link to="/favorites" className={`${linkClasses} relative`}>
                   <Heart size={20} />
                   {favoriteIds.size > 0 && (
@@ -112,6 +128,18 @@ const Navbar = () => {
                           <p className="font-medium text-ocean-800">{user.name}</p>
                           <p className="text-sm text-ocean-500 truncate">{user.email}</p>
                         </div>
+                        <Link
+                          to="/bookings"
+                          className="flex items-center gap-3 px-4 py-3 text-ocean-700 hover:bg-sand-50"
+                        >
+                          <Calendar size={18} />
+                          My Bookings
+                          {upcomingBookingsCount > 0 && (
+                            <span className="ml-auto bg-coral-500 text-white text-xs px-2 py-0.5 rounded-full">
+                              {upcomingBookingsCount}
+                            </span>
+                          )}
+                        </Link>
                         <Link
                           to="/favorites"
                           className="flex items-center gap-3 px-4 py-3 text-ocean-700 hover:bg-sand-50"
@@ -177,6 +205,18 @@ const Navbar = () => {
               
               {user ? (
                 <>
+                  <Link
+                    to="/bookings"
+                    className="flex items-center gap-3 px-4 py-3 text-ocean-800 hover:bg-sand-50 rounded-xl"
+                  >
+                    <Calendar size={20} />
+                    My Bookings
+                    {upcomingBookingsCount > 0 && (
+                      <span className="ml-auto bg-coral-500 text-white text-xs px-2 py-1 rounded-full">
+                        {upcomingBookingsCount}
+                      </span>
+                    )}
+                  </Link>
                   <Link
                     to="/favorites"
                     className="flex items-center gap-3 px-4 py-3 text-ocean-800 hover:bg-sand-50 rounded-xl"

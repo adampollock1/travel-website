@@ -12,8 +12,6 @@ const popularDestinations = [
   { city: 'Tokyo', country: 'Japan', emoji: '🇯🇵' },
   { city: 'New York', country: 'United States', emoji: '🇺🇸' },
   { city: 'Dubai', country: 'United Arab Emirates', emoji: '🇦🇪' },
-  { city: 'London', country: 'United Kingdom', emoji: '🇬🇧' },
-  { city: 'Barcelona', country: 'Spain', emoji: '🇪🇸' },
 ];
 
 const SearchWidget = ({ variant = 'hero', className = '' }) => {
@@ -91,7 +89,7 @@ const SearchWidget = ({ variant = 'hero', className = '' }) => {
             Destination
           </label>
           <div className="relative">
-            <MapPin size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-ocean-400" />
+            <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ocean-400" />
             <input
               ref={inputRef}
               type="text"
@@ -99,7 +97,7 @@ const SearchWidget = ({ variant = 'hero', className = '' }) => {
               onChange={(e) => setInputValue(e.target.value)}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Where are you going?"
-              className="w-full pl-12 pr-4 py-3 bg-sand-50 border border-sand-200 rounded-xl text-ocean-800 placeholder:text-ocean-400 focus:outline-none focus:ring-2 focus:ring-coral-500/20 focus:border-coral-500 transition-all"
+              className="w-full h-[54px] pl-11 pr-4 bg-white border border-sand-300 rounded-xl text-ocean-800 placeholder:text-ocean-400 hover:border-coral-500 focus:outline-none focus:ring-2 focus:ring-coral-500/20 focus:border-coral-500 transition-all"
             />
           </div>
 
@@ -110,7 +108,7 @@ const SearchWidget = ({ variant = 'hero', className = '' }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-dropdown overflow-hidden z-50"
+                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-sand-200 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] overflow-hidden z-50"
               >
                 <div className="p-2">
                   <p className="px-3 py-2 text-xs font-medium text-ocean-500 uppercase tracking-wide">
@@ -161,12 +159,11 @@ const SearchWidget = ({ variant = 'hero', className = '' }) => {
         </div>
 
         {/* Search Button */}
-        <div className={isHero ? 'sm:col-span-2 lg:col-span-1' : ''}>
+        <div className={`${isHero ? 'sm:col-span-2 lg:col-span-1' : ''} self-end`}>
           <Button
             type="submit"
             variant="primary"
-            size="lg"
-            className="w-full"
+            className="w-full h-[54px] text-base"
           >
             <Search size={20} />
             Search

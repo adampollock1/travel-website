@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   MapPin, 
@@ -15,10 +15,12 @@ import {
   Check,
   Users,
   BedDouble,
-  ChevronRight
+  ChevronRight,
+  Calendar
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { format, differenceInDays } from 'date-fns';
 import { StarRating, ScoreRating } from '../components/common/Rating';
 import Badge from '../components/common/Badge';
 import Button from '../components/common/Button';
@@ -27,6 +29,8 @@ import HotelGallery from '../components/hotels/HotelGallery';
 import { HotelCard } from '../components/hotels';
 import useFavoritesStore from '../stores/favoritesStore';
 import useAuthStore from '../stores/authStore';
+import useSearchStore from '../stores/searchStore';
+import useBookingStore from '../stores/bookingStore';
 import hotelService from '../services/hotelService';
 import toast from 'react-hot-toast';
 
@@ -49,6 +53,7 @@ const amenityIcons = {
 
 const HotelDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [hotel, setHotel] = useState(null);
   const [similarHotels, setSimilarHotels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,8 +61,27 @@ const HotelDetail = () => {
   
   const { user } = useAuthStore();
   const { isFavorited, toggleFavorite } = useFavoritesStore();
+  const { checkIn, checkOut, guests } = useSearchStore();
+  const { setCurrentBooking } = useBookingStore();
   
   const isFav = hotel ? isFavorited(hotel._id) : false;
+  
+  // Calculate nights from search dates
+  const nights = differenceInDays(checkOut, checkIn) || 1;
+  
+  // Calculate pricing
+  const calculatePricing = (room) => {
+    const roomPrice = room?.price || hotel?.pricePerNight || 0;
+    const roomTotal = roomPrice * nights;
+    const cleaningFee = 50;
+    const serviceFee = Math.round(roomTotal * 0.1);
+    const taxes = Math.round((roomTotal + cleaningFee + serviceFee) * 0.12);
+    const total = roomTotal + cleaningFee + serviceFee + taxes;
+    
+    return { roomTotal, cleaningFee, serviceFee, taxes, total };
+  };
+  
+  const pricing = selectedRoom ? calculatePricing(selectedRoom) : calculatePricing(null);
 
   useEffect(() => {
     const fetchHotel = async () => {
@@ -104,6 +128,50 @@ const HotelDetail = () => {
       navigator.clipboard.writeText(window.location.href);
       toast.success('Link copied to clipboard');
     }
+  };
+
+  const handleReserve = () => {
+    if (!user) {
+      toast.error('Please log in to make a reservation');
+      navigate('/login', { state: { from: { pathname: `/hotel/${id}` } } });
+      return;
+    }
+    
+    if (!selectedRoom) {
+      toast.error('Please select a room');
+      return;
+    }
+    
+    if (!selectedRoom.available) {
+      toast.error('This room is not available');
+      return;
+    }
+    
+    const bookingData = {
+      userId: user._id,
+      hotel: {
+        _id: hotel._id,
+        name: hotel.name,
+        location: hotel.location,
+        images: hotel.images,
+        stars: hotel.stars,
+      },
+      room: selectedRoom,
+      checkIn: checkIn.toISOString(),
+      checkOut: checkOut.toISOString(),
+      nights,
+      guests,
+      pricing: {
+        roomTotal: pricing.roomTotal,
+        cleaningFee: pricing.cleaningFee,
+        serviceFee: pricing.serviceFee,
+        taxes: pricing.taxes,
+      },
+      totalPrice: pricing.total,
+    };
+    
+    setCurrentBooking(bookingData);
+    navigate('/checkout');
   };
 
   if (isLoading) {
@@ -380,6 +448,28 @@ const HotelDetail = () => {
                 <ScoreRating score={hotel.rating} size="sm" />
               </div>
 
+              {/* Dates Display */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-sand-50 rounded-xl p-3">
+                  <p className="text-xs text-ocean-500 flex items-center gap-1 mb-1">
+                    <Calendar size={12} />
+                    Check-in
+                  </p>
+                  <p className="font-medium text-ocean-800 text-sm">
+                    {format(checkIn, 'MMM d, yyyy')}
+                  </p>
+                </div>
+                <div className="bg-sand-50 rounded-xl p-3">
+                  <p className="text-xs text-ocean-500 flex items-center gap-1 mb-1">
+                    <Calendar size={12} />
+                    Check-out
+                  </p>
+                  <p className="font-medium text-ocean-800 text-sm">
+                    {format(checkOut, 'MMM d, yyyy')}
+                  </p>
+                </div>
+              </div>
+
               {/* Selected Room Info */}
               {selectedRoom && (
                 <div className="bg-sand-50 rounded-xl p-4 mb-6">
@@ -395,25 +485,35 @@ const HotelDetail = () => {
               {/* Price Breakdown */}
               <div className="space-y-3 mb-6 pb-6 border-b border-sand-200">
                 <div className="flex justify-between text-ocean-600">
-                  <span>${selectedRoom?.price || hotel.pricePerNight} x 2 nights</span>
-                  <span>${(selectedRoom?.price || hotel.pricePerNight) * 2}</span>
+                  <span>${selectedRoom?.price || hotel.pricePerNight} x {nights} night{nights !== 1 ? 's' : ''}</span>
+                  <span>${pricing.roomTotal}</span>
                 </div>
                 <div className="flex justify-between text-ocean-600">
                   <span>Cleaning fee</span>
-                  <span>$50</span>
+                  <span>${pricing.cleaningFee}</span>
                 </div>
                 <div className="flex justify-between text-ocean-600">
                   <span>Service fee</span>
-                  <span>$30</span>
+                  <span>${pricing.serviceFee}</span>
+                </div>
+                <div className="flex justify-between text-ocean-600">
+                  <span>Taxes</span>
+                  <span>${pricing.taxes}</span>
                 </div>
               </div>
 
               <div className="flex justify-between font-bold text-ocean-800 mb-6">
                 <span>Total</span>
-                <span>${(selectedRoom?.price || hotel.pricePerNight) * 2 + 80}</span>
+                <span>${pricing.total}</span>
               </div>
 
-              <Button variant="primary" size="lg" className="w-full mb-3">
+              <Button 
+                variant="primary" 
+                size="lg" 
+                className="w-full mb-3"
+                onClick={handleReserve}
+                disabled={!selectedRoom?.available}
+              >
                 Reserve Now
               </Button>
               <p className="text-center text-sm text-ocean-500">

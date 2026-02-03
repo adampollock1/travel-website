@@ -7,6 +7,9 @@ import HotelDetail from './pages/HotelDetail'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Favorites from './pages/Favorites'
+import Checkout from './pages/Checkout'
+import BookingConfirmation from './pages/BookingConfirmation'
+import Bookings from './pages/Bookings'
 
 function App() {
   return (
@@ -38,6 +41,9 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
           <Route path="favorites" element={<Favorites />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="booking-confirmation/:bookingId" element={<BookingConfirmation />} />
+          <Route path="bookings" element={<Bookings />} />
         </Route>
       </Routes>
     </>
